@@ -32,6 +32,15 @@ class Game {
 			playerId : idHelper()
 		});
 	}
+
+	static getGame({ gameId, playerId }) {
+		console.log(gameId)
+		const game  = dbGame[gameId-1];
+		if(game === undefined) {
+			return Promise.reject()		
+		}
+		return Promise.resolve(game);
+	}
 }
 
 module.exports = Game
