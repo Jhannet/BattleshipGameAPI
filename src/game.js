@@ -2,14 +2,14 @@ const dbGame = []
 const idHelper = require('./IdHelper.js')
 
 class Game {
-	constructor({cols = 10, rows = 10} = {}){
-		this.cols = cols;
+	constructor({columns = 10, rows = 10} = {}){
+		this.columns = columns;
 		this.rows = rows;
 	}
-	static create({cols = 10, rows = 10} = {}) {
-		const game = new Game({cols,rows});
+	static create({columns = 10, rows = 10} = {}) {
+		const game = new Game({columns,rows});
 		game.id = dbGame.length + 1;
-		game.playerId = idHelper();
+		game.playerId_1 = idHelper();
 		const token = idHelper();
 		game.token = token
 		dbGame.push(game);
@@ -18,7 +18,7 @@ class Game {
 		return Promise.resolve({
 			id : game.id, 
 			session : game.session,
-			playerId : game.playerId
+			playerId : game.playerId_1
 		})
 	}
 
@@ -27,17 +27,23 @@ class Game {
 		if(game === undefined) {
 			return Promise.reject()		
 		}
+		game.playerId_2 = idHelper();
+		dbGame[game.id] = game;
 		return Promise.resolve({
 			id : game.id,
-			playerId : idHelper()
+			playerId : game.playerId_2,
 		});
 	}
 
 	static getGame({ gameId, playerId }) {
-		console.log(gameId)
 		const game  = dbGame[gameId-1];
 		if(game === undefined) {
 			return Promise.reject()		
+		}
+		if(game.playerId_1 === playerId) {
+			delete game.playerId_2;
+		}else{
+			delete game.playerId_1;
 		}
 		return Promise.resolve(game);
 	}
