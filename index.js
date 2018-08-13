@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const DBConnection = require('./data-layer/DBConnection');
 const app = express()
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,9 +15,12 @@ const Game = require('./src/game.js')
 app.get('/game',(req, res) => {
   Game.join(req.query.token)
   .then(game => {
-      res.send(game)
-    })
-  .catch(error => console.error(error))
+    res.send(game)
+  })
+  .catch(error => {
+    console.error(error);
+    throw(error);
+  })
 })
 
 app.get('/game/:gameId/:playerId', (req, res) => {
@@ -41,26 +45,28 @@ app.post('/game', (req, res) => {
     .then(game => {
       res.send(game)
     })
-    .catch(error => console.error(error))
+    .catch(error => {
+      console.error(error);
+      throw(error);
+    })
 })
 
-app.listen(3000, () => {
-  console.log('Example app listening on port 3000!')
-})
+app.on('DBReady', function() { 
+  app.listen(3000, () => {
+    console.log('Example app listening on port 3000!'); 
+  }); 
+}); 
+
+DBConnection.authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+    const UserModel = require('./data-layer/UserModel');
+    const GameModel = require('./data-layer/GameModel');
+    app.emit('DBReady');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 
-/*
-  POST /game
-  {
-    "rows":
-    "columns"
-  }
 
-  {
-    "gameId": "http://localhost:3000/game?token=asdfasdfw23",
-    "playerId": "asdfasdfasdf"
-  }
-*/
-
-//folders: game-service
-//files: GameService.js

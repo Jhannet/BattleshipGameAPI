@@ -12,6 +12,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "sequelize": "^4.38.0",
+    "sqlite3": "^4.0.2",
     "tedious": "^2.6.4"
   }
 }
