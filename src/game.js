@@ -1,6 +1,4 @@
 const GameModel = require('../data-layer/GameModel');
-
-const dbGame = []
 const idHelper = require('./IdHelper.js')
 
 class Game {
@@ -10,11 +8,11 @@ class Game {
 	}
 	static create({columns = 10, rows = 10} = {}) {
 		const game = new Game({columns,rows});
-		game.id = dbGame.length + 1;
+		//game.id = dbGame.length + 1;
 		game.playerId_1 = idHelper();
 		const token = idHelper();
 		game.token = token
-		dbGame.push(game);
+		//dbGame.push(game);
 		return GameModel.create(game)
       .then(jane => {
         console.log(jane.toJSON());
@@ -33,11 +31,31 @@ class Game {
 
 	static join(token) {
     //const game = dbGame.find(game => game.token === token);
-    const game = GameModel.find({
+    return GameModel.findOne({
         where: {
           token: token
         }
-      });
+			})
+			.then(game => {
+				console.log(game)
+				game.playerId_2 = idHelper();
+				return GameModel.update(
+					{player_id_2:game.playerId_2},
+					{where:{id:game.id}}
+				);
+				//dbGame[game.id] = game;
+			})
+			.then(game => {
+				return {
+					id : game.id,
+					playerId : game.playerId_2,
+				}
+			})
+			.catch(error => {
+				console.log(error);
+				throw(error);
+			});
+			/*
 		if(game === undefined) {
 			return Promise.reject()		
 		}
@@ -46,7 +64,7 @@ class Game {
 		return Promise.resolve({
 			id : game.id,
 			playerId : game.playerId_2,
-		});
+		});*/
 	}
 
 	static getGame({ gameId, playerId }) {

@@ -24,6 +24,6 @@ const GameModel = DBConnection.define('Game', {
     field: 'rows',
     validate: { min: 10, max: 30 }
   },
-  });
+});
 
 module.exports = GameModel;

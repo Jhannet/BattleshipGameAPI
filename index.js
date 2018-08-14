@@ -24,8 +24,9 @@ app.get('/game',(req, res) => {
 })
 
 app.get('/game/:gameId/:playerId', (req, res) => {
-  const gameId = req.params.gameId;
-  const playerId = req.params.playerId;
+  /*const gameId = req.params.gameId;
+  const playerId = req.params.playerId;*/
+  const { gameId, playerId }  = req.params;
   console.log(playerId)
   Game.getGame({ gameId, playerId })
       .then(game => {
@@ -60,7 +61,6 @@ app.on('DBReady', function() {
 DBConnection.authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
-    const UserModel = require('./data-layer/UserModel');
     const GameModel = require('./data-layer/GameModel');
     app.emit('DBReady');
   })
