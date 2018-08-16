@@ -19,25 +19,23 @@ app.get('/game',(req, res) => {
   })
   .catch(error => {
     console.error(error);
-    throw(error);
+    res.status(400).send({
+      message: 'Could not join the game'
+    })
   })
 })
 
-app.get('/game/:gameId/:playerId', (req, res) => {
-  /*const gameId = req.params.gameId;
-  const playerId = req.params.playerId;*/
+app.get('/game/:gameId/player/:playerId', (req, res) => {
   const { gameId, playerId }  = req.params;
-  console.log(playerId)
   Game.getGame({ gameId, playerId })
       .then(game => {
-        console.log(game)
-          res.send(game)            
+        res.send(game)            
       })
-      .catch(err => {
-          console.log(err)
-          res.status(500).send({
-              error: 'Game could not be found'
-          })
+      .catch(error => {
+        console.error(error)
+        res.status(400).send({
+          message: 'Game could not be found'
+        })
       })
 })
 
@@ -47,8 +45,10 @@ app.post('/game', (req, res) => {
       res.send(game)
     })
     .catch(error => {
-      console.error(error);
-      throw(error);
+      console.error(err)
+      res.status(400).send({
+        message: 'Game could not be created'
+      })
     })
 })
 
@@ -62,10 +62,14 @@ DBConnection.authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
     const GameModel = require('./data-layer/GameModel');
+    DBConnection.sync();
     app.emit('DBReady');
   })
-  .catch(err => {
+  .catch(error => {
     console.error('Unable to connect to the database:', err);
+    res.status(400).send({
+      message: error
+    })
   });
 
 

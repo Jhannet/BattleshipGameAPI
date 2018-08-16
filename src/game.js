@@ -11,9 +11,9 @@ class Game {
 		game.playerId_1 = idHelper();
 		const token = idHelper();
 		game.token = token
+		
 		return GameModel.create(game)
-      .then(jane => {
-        console.log(jane.toJSON());
+      .then(res => {
 	    	game.session = `http://localhost:3000/game?token=${token}`;
         return {
           id : game.id, 
@@ -28,47 +28,28 @@ class Game {
 	}
 
 	static join(token) {
-    return GameModel.findOne({
-        where: {
-          token: token
-        }
+		return GameModel.findOne({where:{token: token}})
+			.then(result => {
+				const playerId_2 = idHelper();
+				return result.update({playerId_2: playerId_2});
 			})
-			.then(game => {
-				game.playerId_2 = idHelper();
-				return GameModel.update(
-					{player_id_2:game.playerId_2},
-          
-          
-          {where:{id:game.id}}
-				);
-				//dbGame[game.id] = game;
-			})
-			.then(game => {
+			.then(resultUpdated => {
+				const gameUpdated = resultUpdated.dataValues;
 				return {
-					id : game.id,
-					playerId : game.playerId_2,
-				}
+					id : gameUpdated.id,
+					playerId : gameUpdated.playerId_2,
+				};
 			})
 			.catch(error => {
-				console.log(error);
+				console.error(error);
 				throw(error);
 			});
-			/*
-		if(game === undefined) {
-			return Promise.reject()		
-		}
-		game.playerId_2 = idHelper();
-		dbGame[game.id] = game;
-		return Promise.resolve({
-			id : game.id,
-			playerId : game.playerId_2,
-		});*/
 	}
 
 	static getGame({ gameId, playerId }) {
-    const game  = GameModel.findById(gameId);
-    /*return GameModel.findById(gameId)
-      .then(game => {
+    return GameModel.findById(gameId)
+      .then(result => {
+				const game = result.dataValues;
         if(game.playerId_1 === playerId) {
           delete game.playerId_2;
         }else{
@@ -79,16 +60,7 @@ class Game {
       .catch(error => {
         console.error(error);
         throw(error);
-      });*/
-		if(game === undefined) {
-			return Promise.reject()		
-		}
-		if(game.playerId_1 === playerId) {
-          delete game.playerId_2;
-        }else{
-          delete game.playerId_1;
-        }
-		return Promise.resolve(game);
+      });
 	}
 }
 
