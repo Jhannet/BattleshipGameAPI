@@ -8,11 +8,9 @@ class Game {
 	}
 	static create({columns = 10, rows = 10} = {}) {
 		const game = new Game({columns,rows});
-		//game.id = dbGame.length + 1;
 		game.playerId_1 = idHelper();
 		const token = idHelper();
 		game.token = token
-		//dbGame.push(game);
 		return GameModel.create(game)
       .then(jane => {
         console.log(jane.toJSON());
@@ -30,18 +28,18 @@ class Game {
 	}
 
 	static join(token) {
-    //const game = dbGame.find(game => game.token === token);
     return GameModel.findOne({
         where: {
           token: token
         }
 			})
 			.then(game => {
-				console.log(game)
 				game.playerId_2 = idHelper();
 				return GameModel.update(
 					{player_id_2:game.playerId_2},
-					{where:{id:game.id}}
+          
+          
+          {where:{id:game.id}}
 				);
 				//dbGame[game.id] = game;
 			})
@@ -68,15 +66,28 @@ class Game {
 	}
 
 	static getGame({ gameId, playerId }) {
-		const game  = dbGame[gameId-1];
+    const game  = GameModel.findById(gameId);
+    /*return GameModel.findById(gameId)
+      .then(game => {
+        if(game.playerId_1 === playerId) {
+          delete game.playerId_2;
+        }else{
+          delete game.playerId_1;
+        }
+        return game;
+      })
+      .catch(error => {
+        console.error(error);
+        throw(error);
+      });*/
 		if(game === undefined) {
 			return Promise.reject()		
 		}
 		if(game.playerId_1 === playerId) {
-			delete game.playerId_2;
-		}else{
-			delete game.playerId_1;
-		}
+          delete game.playerId_2;
+        }else{
+          delete game.playerId_1;
+        }
 		return Promise.resolve(game);
 	}
 }
