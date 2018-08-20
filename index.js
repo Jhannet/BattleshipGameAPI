@@ -25,16 +25,17 @@ app.get('/game',(req, res) => {
   })
 })
 
-app.get('/game/:gameId/player/:playerId', (req, res) => {
+app.put('/game/:gameId/player/:playerId', (req, res) => {
   const { gameId, playerId }  = req.params;
-  Game.getGame({ gameId, playerId })
+  const ships = req.body['ships'];
+  Game.shipsPosition({ gameId, playerId, ships })
       .then(game => {
         res.send(game)            
       })
       .catch(error => {
         console.error(error)
         res.status(400).send({
-          message: 'Game could not be found'
+          errors: error
         })
       })
 })
@@ -45,7 +46,7 @@ app.post('/game', (req, res) => {
       res.send(game)
     })
     .catch(error => {
-      console.error(err)
+      console.error(error)
       res.status(400).send({
         message: 'Game could not be created'
       })
