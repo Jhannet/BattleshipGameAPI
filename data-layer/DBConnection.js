@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-/*
+
 const DBConnection = new Sequelize('BattleshipDB', 'sa', 'Abc123', {
   host: 'localhost',
   dialect: 'mssql',
@@ -15,10 +15,10 @@ const DBConnection = new Sequelize('BattleshipDB', 'sa', 'Abc123', {
   storage: './data.mssql',
   operatorsAliases: false
 });
-*/
+/*
 const DBConnection = new Sequelize('BattleshipDB', null, null, {
   dialect: "sqlite",
   storage: '../db/BattleshipDB.db',
-});
+});*/
 
 module.exports = DBConnection;

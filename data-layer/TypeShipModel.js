@@ -10,7 +10,6 @@ const TypeShipModel = DBConnection.define('TypeShip', {
     name: Sequelize.STRING,
     field: 'name'
   },
-  timestamps: false,
 });
 TypeShipModel.sync();
 const type2 = TypeShipModel.build({type: 2, name: 'Boat'});

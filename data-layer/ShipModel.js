@@ -13,7 +13,6 @@ const ShipModel = DBConnection.define('Ship', {
   typeShipId: {
     type: Sequelize.INTEGER,
     field: 'typeShipId',
-    // validate: { min: 1, max: 4 }
   },
   positionX: {
     type: Sequelize.INTEGER,
@@ -25,7 +24,6 @@ const ShipModel = DBConnection.define('Ship', {
     field: 'position_y',
     validate: { min: 0, max: 20 }
   },
-  timestamps: false,
 });
 
 ShipModel.sync();
